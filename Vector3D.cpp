@@ -146,26 +146,22 @@ public:
     }
 };
 
-#include <iostream>
+class plane {
+    vec3 point;
+    vec3 normal;
 
-int main() {
-    // Create a sphere at origin with radius 1
-    sphere s(vec3(0,10,10), 5.0f);
+public:
+    plane(const vec3& a, const vec3& b) : point(a), normal(b.normalized()) {}
 
-    // Ray starting at z = -5 pointing toward origin
-    ray r(vec3(0,0,0), vec3(0,0,1));
+    bool rayIntersect(const ray& a, vec3& hit) {
+        float dot1 = normal.dot(a.direction);        
+        if(dot1 == 0) return false;
 
-    vec3 hit;
-
-    if (s.rayIntersect(r, hit)) {
-        std::cout << "Hit!\n";
-        std::cout << "Intersection point: "
-                  << hit.x << ", "
-                  << hit.y << ", "
-                  << hit.z << "\n";
-    } else {
-        std::cout << "No intersection\n";
+        float t = normal.dot(point - a.origin)/dot1;
+        if (t < 0) return false;
+        hit = t * a.direction + a.origin;
+        return true;
     }
+};
 
-    return 0;
-}
+
